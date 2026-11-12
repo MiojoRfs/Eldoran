@@ -19,7 +19,7 @@ import { cpDelta, odds, riskOf, stats } from "@/game/engine";
 import { dec, num, signed } from "@/game/format";
 import { api } from "@/game/api";
 import { useGame } from "@/game/store";
-import type { ClassId, Zone } from "@/game/types";
+import type { ClassId, Player, Zone } from "@/game/types";
 import { ClassMark, ItemMark, ZoneMark } from "./icons";
 
 export function Journey() {
@@ -93,6 +93,144 @@ function ZoneDetail({ zone, rk, luck, drain }: { zone: Zone; rk: number; luck: n
       <div><dt className="text-muted">Mítico</dt><dd>{dec(o[4], 2)}%</dd></div>
       <div><dt className="text-muted">Secreto</dt><dd>{dec(o[5], 3)}%</dd></div>
     </dl>
+  );
+}
+
+function AttributeRadar({ player }: { player: Player }) {
+  const total = stats(player, false).attrs;
+  const base = player.at;
+  const axes: { k: "for" | "agi" | "int" | "sor" | "vit"; label: string }[] = [
+    { k: "for", label: "FOR" },
+    { k: "agi", label: "AGI" },
+    { k: "int", label: "INT" },
+    { k: "sor", label: "SOR" },
+    { k: "vit", label: "VIT" },
+  ];
+
+  const size = 250;
+  const cx = size / 2;
+  const cy = size / 2;
+  const radius = 74;
+  const maxVal = Math.max(15, ...axes.map((a) => total[a.k])) * 1.15;
+
+  const getPoint = (index: number, value: number) => {
+    const angle = (Math.PI * 2 * index) / axes.length - Math.PI / 2;
+    const r = (Math.min(value, maxVal) / maxVal) * radius;
+    return {
+      x: cx + r * Math.cos(angle),
+      y: cy + r * Math.sin(angle),
+    };
+  };
+
+  const toPolygon = (vals: Record<string, number>) =>
+    axes
+      .map((a, i) => {
+        const pt = getPoint(i, vals[a.k] || 0);
+        return `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+      })
+      .join(" ");
+
+  const levels = [0.25, 0.5, 0.75, 1];
+  const beige = "#f5ebd6";
+  const paleGold = "#fde047";
+
+  return (
+    <div className="row mt-4 flex flex-col items-center p-3">
+      <div className="mb-1 flex w-full items-center justify-between text-xs">
+        <span className="text-muted">Perfil da Build</span>
+        <span className="flex items-center gap-3">
+          <span className="inline-flex items-center gap-1" style={{ color: beige }}>
+            <span className="inline-block size-2 rounded-full" style={{ backgroundColor: beige }} /> Base
+          </span>
+          <span className="inline-flex items-center gap-1" style={{ color: paleGold }}>
+            <span className="inline-block size-2 rounded-full" style={{ backgroundColor: paleGold }} /> Total
+          </span>
+        </span>
+      </div>
+
+      <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-[250px] overflow-visible">
+        {/* Teias de fundo em bege */}
+        {levels.map((lv) => {
+          const pts = axes
+            .map((_, i) => {
+              const pt = getPoint(i, maxVal * lv);
+              return `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+            })
+            .join(" ");
+          return (
+            <polygon
+              key={lv}
+              points={pts}
+              fill="none"
+              stroke={beige}
+              strokeOpacity={0.28}
+              strokeWidth={1}
+            />
+          );
+        })}
+
+        {/* Eixos radiais */}
+        {axes.map((_, i) => {
+          const end = getPoint(i, maxVal);
+          return (
+            <line
+              key={i}
+              x1={cx}
+              y1={cy}
+              x2={end.x}
+              y2={end.y}
+              stroke={beige}
+              strokeOpacity={0.28}
+              strokeWidth={1}
+            />
+          );
+        })}
+
+        {/* Polígono Base (tracejado bege) */}
+        <polygon
+          points={toPolygon(base)}
+          fill={beige}
+          fillOpacity={0.12}
+          stroke={beige}
+          strokeOpacity={0.85}
+          strokeWidth={1.4}
+          strokeDasharray="4 3"
+        />
+
+        {/* Polígono Total com Equipamentos (amarelo-ouro claro) */}
+        <polygon
+          points={toPolygon(total)}
+          fill={paleGold}
+          fillOpacity={0.28}
+          stroke={paleGold}
+          strokeWidth={2.2}
+        />
+
+        {/* Vértices e Rótulos */}
+        {axes.map((a, i) => {
+          const pt = getPoint(i, total[a.k] || 0);
+          const labelPt = getPoint(i, maxVal * 1.25);
+          return (
+            <g key={a.k}>
+              <circle cx={pt.x} cy={pt.y} r={3.5} fill={paleGold} />
+              <text
+                x={labelPt.x}
+                y={labelPt.y}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill={beige}
+                className="text-[10px] font-semibold"
+              >
+                {a.label}{" "}
+                <tspan fill={paleGold} fontWeight="bold">
+                  {total[a.k]}
+                </tspan>
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
   );
 }
 
@@ -259,6 +397,7 @@ function Attributes() {
             <button type="button" className="btn" disabled={player.pts <= 0} aria-label={`Aumentar ${a.n}`} onClick={() => addAttr(a.k)}>+</button>
           </div>
         ))}
+        <AttributeRadar player={player} />
       </div>
       <h3 className="mt-6 mb-2 text-gold">Habilidades</h3>
       <div className="row mb-2 p-3" data-class={player.cls}>
@@ -300,7 +439,7 @@ function Shop() {
       </div>
       {SHOP.map((id) => {
         const it = ITEMS[id];
-        if (!it) return null; // PROTEÇÃO: Se o item não existir, pula e não quebra o jogo
+        if (!it) return null;
         const p = (it.v || 10) * 6;
         return (
           <div key={id} className="row flex flex-col gap-3 p-3 sm:flex-row sm:items-center">
@@ -330,7 +469,7 @@ function Smith() {
       <p className="mb-3 text-sm text-muted">O ferreiro troca materiais, barras e ouro por uma peça melhor.</p>
       {RECIPES.map((r) => {
         const it = ITEMS[r.id];
-        if (!it) return null; // PROTEÇÃO: Se a receita apontar para item nulo, ignora
+        if (!it) return null;
         return (
           <div key={r.id} className="row flex flex-col gap-3 p-3 glow sm:flex-row sm:items-center" data-rarity={it.r || 0}>
             <div className="flex min-w-0 flex-1 items-start gap-3">
