@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: "Uncial Antiqua";
+    font-style: normal;
+    font-weight: 400;
+    src: url("fonts/N0bM2S5WOex4OUbESzoESK-i-MfWQZQ.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Uncial Antiqua Ext";
+    font-style: normal;
+    font-weight: 400;
+    src: url("fonts/N0bM2S5WOex4OUbESzoESK-i-MfYQZRxBQ.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F;
+  }
+  @font-face {
+    font-family: "IM Fell English";
+    font-style: italic;
+    font-weight: 400;
+    src: url("fonts/Ktk3ALSLW8zDe0rthJysWrnLsAzHFZOafYs.woff2") format("woff2");
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; }
+  .card {
+    position: relative;
+    overflow: hidden;
+    background: #100c09;
+    color: #f3e6c8;
+  }
+  .card * { position: relative; }
+  .sky, .scene, .frame, .veil { position: absolute; inset: 0; }
+  .sky {
+    background:
+      radial-gradient(ellipse 55% 48% at 50% 42%, rgba(228,194,122,.16), transparent 68%),
+      radial-gradient(ellipse 28% 22% at 78% 72%, rgba(196,69,54,.28), transparent 70%),
+      radial-gradient(ellipse 90% 55% at 50% 120%, #24160f, transparent 62%),
+      #100c09;
+  }
+  .frame {
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 0 10px #100c09,
+      inset 0 0 0 12px rgba(228,194,122,.85),
+      inset 0 0 0 16px #100c09,
+      inset 0 0 0 17px rgba(228,194,122,.35);
+  }
+  .moon {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #f3e6c8, #e4c27a 42%, #8d6a32 78%);
+    box-shadow: 0 0 40px 8px rgba(228,194,122,.25);
+  }
+  .moon i {
+    position: absolute;
+    border-radius: 50%;
+    background: #100c09;
+  }
+  h1 {
+    margin: 0;
+    font-family: "Uncial Antiqua", "Uncial Antiqua Ext", serif;
+    font-weight: 400;
+    line-height: .92;
+    letter-spacing: .02em;
+    text-align: center;
+    background: linear-gradient(180deg, #fff6df 0%, #f3e6c8 28%, #e4c27a 62%, #b8893e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 3px 0 #100c09) drop-shadow(0 10px 18px rgba(0,0,0,.65));
+  }
+  h1 span { display: block; }
+  .tag {
+    margin: 0;
+    font-family: "IM Fell English", Georgia, serif;
+    font-style: italic;
+    color: #f3e6c8;
+    letter-spacing: .08em;
+    text-shadow: 0 2px 0 #100c09, 0 6px 14px #000;
+  }
+  .rule {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e4c27a, transparent);
+    border: 0;
+  }
+  .orn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #e4c27a;
+    font-family: "IM Fell English", Georgia, serif;
+  }
+  .orn i {
+    display: block;
+    height: 1px;
+    background: #e4c27a;
+  }
+  .gem {
+    width: 8px; height: 8px;
+    background: #c44536;
+    transform: rotate(45deg);
+    box-shadow: 0 0 10px #c44536;
+    flex: none;
+  }
+
+  /* ——— 1200×630 link card ——— */
+  #og { width: 1200px; height: 630px; }
+  #og .moon { width: 118px; height: 118px; left: 168px; top: 78px; }
+  #og .moon i { width: 96px; height: 96px; left: 28px; top: -10px; }
+  #og .lockup {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    transform: translate(-50%, -54%);
+    width: 760px;
+    text-align: center;
+  }
+  #og h1 { font-size: 108px; }
+  #og h1 span:last-child { font-size: 86px; margin-top: 8px; }
+  #og .tag { font-size: 28px; margin-top: 18px; }
+  #og .orn { margin: 16px auto 0; width: 340px; }
+  #og .orn i { width: 120px; }
+  #og .scene { top: auto; height: 250px; bottom: 0; }
+  #og .veil {
+    background: linear-gradient(180deg, #100c09 0%, rgba(16,12,9,.2) 28%, transparent 48%);
+    top: auto; height: 120px; bottom: 188px;
+  }
+
+  /* ——— 1200×264 X feed card ——— */
+  #banner { width: 1200px; height: 264px; margin-top: 24px; }
+  #banner .frame {
+    box-shadow:
+      inset 0 0 0 8px #100c09,
+      inset 0 0 0 10px rgba(228,194,122,.85),
+      inset 0 0 0 13px #100c09,
+      inset 0 0 0 14px rgba(228,194,122,.35);
+  }
+  #banner .moon { width: 72px; height: 72px; right: 86px; top: 28px; left: auto; }
+  #banner .moon i { width: 58px; height: 58px; left: 18px; top: -8px; }
+  #banner .lockup {
+    position: absolute;
+    left: 64px;
+    top: 32px;
+    width: 500px;
+    text-align: left;
+  }
+  #banner h1 { text-align: left; font-size: 62px; }
+  #banner h1 span:last-child { font-size: 50px; margin-top: 2px; }
+  #banner .tag { font-size: 18px; margin-top: 8px; letter-spacing: .06em; text-align: left; }
+  #banner .orn { justify-content: flex-start; margin-top: 8px; width: 240px; }
+  #banner .orn i { width: 72px; }
+  #banner .scene { top: auto; height: 200px; bottom: 0; }
+</style>
+</head>
+<body>
+  <section class="card" id="og" aria-label="Crônicas de Eldoria">
+    <div class="sky"></div>
+    <div class="moon"><i></i></div>
+    <svg class="scene" viewBox="0 0 1200 250" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+      <g fill="#1c140e">
+        <path d="M40 250 L110 120 L180 250 Z"/>
+        <path d="M120 250 L200 90 L280 250 Z"/>
+        <path d="M920 250 L1000 100 L1080 250 Z"/>
+        <path d="M1020 250 L1110 130 L1180 250 Z"/>
+      </g>
+      <g fill="#e4c27a">
+        <path d="M70 188 h28 v-22 h10 v22 h22 v-34 h10 v34 h18 v-18 h10 v18 h26 v46 H70z"/>
+        <path d="M430 210 h36 v-48 h14 v48 h30 v-70 h16 v70 h34 v-40 h14 v40 h40 v40 H430z"/>
+        <path d="M500 92 h18 v-16 h12 v16 h18 v-22 h12 v22 h20 v-12 h12 v12 h22 v78 h-26 v-28 h-18 v28 h-22 v-36 h-16 v36 h-20z"/>
+        <path d="M548 168 h28 v40 h-28z"/>
+        <path d="M980 196 h22 v-18 h8 v18 h16 v-28 h8 v28 h14 v-14 h8 v14 h20 v40 h-96z"/>
+      </g>
+      <g fill="#100c09">
+        <path d="M516 118 h10 v12 h-10z M546 104 h12 v14 h-12z M578 118 h10 v12 h-10z"/>
+        <path d="M548 176 h28 v32 h-28z"/>
+        <path d="M458 168 h8 v10 h-8z M612 156 h8 v10 h-8z"/>
+      </g>
+      <g fill="#c44536">
+        <path d="M554 182 h16 v18 h-16z"/>
+        <circle cx="562" cy="132" r="2.2"/>
+        <circle cx="250" cy="200" r="2"/>
+        <circle cx="980" cy="214" r="2"/>
+      </g>
+      <path d="M80 236 H1120" stroke="#e4c27a" stroke-width="2" opacity=".55"/>
+    </svg>
+    <div class="veil"></div>
+    <div class="lockup">
+      <h1><span>Crônicas</span><span>de Eldoria</span></h1>
+      <p class="tag">RPG idle medieval</p>
+      <div class="orn"><i></i><b class="gem"></b><i></i></div>
+    </div>
+    <div class="frame"></div>
+  </section>
+
+  <section class="card" id="banner" aria-label="Crônicas de Eldoria">
+    <div class="sky"></div>
+    <div class="moon"><i></i></div>
+    <svg class="scene" viewBox="0 0 1200 200" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
+      <g fill="#1c140e">
+        <path d="M620 200 L690 70 L760 200 Z"/>
+        <path d="M700 200 L790 40 L880 200 Z"/>
+        <path d="M980 200 L1060 80 L1140 200 Z"/>
+      </g>
+      <g fill="#e4c27a">
+        <path d="M760 168 h30 v-36 h12 v36 h26 v-58 h14 v58 h28 v-30 h12 v30 h34 v32 H760z"/>
+        <path d="M820 78 h16 v-14 h10 v14 h16 v-18 h10 v18 h16 v-10 h10 v10 h18 v70 h-22 v-24 h-14 v24 h-18 v-30 h-14 v30 h-16z"/>
+        <path d="M1040 150 h18 v-16 h8 v16 h14 v-24 h8 v24 h12 v-12 h8 v12 h16 v36 h-84z"/>
+      </g>
+      <g fill="#100c09">
+        <path d="M834 100 h8 v10 h-8z M860 88 h10 v12 h-10z M888 100 h8 v10 h-8z"/>
+        <path d="M858 148 h18 v28 h-18z"/>
+      </g>
+      <path fill="#c44536" d="M862 154 h10 v14 h-10z"/>
+      <path d="M640 186 H1160" stroke="#e4c27a" stroke-width="2" opacity=".5"/>
+    </svg>
+    <div class="lockup">
+      <h1><span>Crônicas</span><span>de Eldoria</span></h1>
+      <p class="tag">RPG idle medieval</p>
+      <div class="orn"><i></i><b class="gem"></b><i></i></div>
+    </div>
+    <div class="frame"></div>
+  </section>
+</body>
+</html>

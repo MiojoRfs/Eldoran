@@ -1,0 +1,309 @@
+@import "tailwindcss";
+
+/* Tema de Eldoria — uma fonte de verdade.
+   Troque os tokens aqui para recolorir o cromado inteiro.
+   --accent, --rarity e --scene mudam por data-attribute, não por hex no JSX. */
+@theme {
+  --color-bg: #100c09;
+  --color-surface: #1a140f;
+  --color-fg: #f3e6c8;
+  --color-muted: #b6a48a;
+  --color-gold: #e4c27a;
+  --color-gold-ink: #2a1c08;
+  --color-line: #4a3824;
+  --color-life: #c44536;
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cinzel", "Times New Roman", serif;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-bg);
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-gold-ink);
+  }
+  ::placeholder {
+    color: var(--color-muted);
+  }
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.45rem 1rem;
+    background: var(--color-gold);
+    color: var(--color-gold-ink);
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .btn:hover:not(:disabled) { filter: brightness(1.06); }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn[data-hot="true"]:disabled { opacity: 1; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-fg);
+    border-color: var(--color-line);
+    font-weight: 600;
+  }
+  .btn-danger {
+    background: transparent;
+    color: var(--color-life);
+    border-color: var(--color-life);
+  }
+  .icon-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    color: var(--color-fg);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+  }
+  .icon-btn:hover { border-color: var(--color-gold); color: var(--color-gold); }
+  .icon-btn[data-on="true"] { border-color: var(--color-gold); color: var(--color-gold); }
+  .inp {
+    width: 100%;
+    min-height: 44px;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: 0.55rem 0.75rem;
+  }
+  .inp:focus { border-color: var(--color-gold); outline: none; }
+  .panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+  }
+  .row {
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 36px;
+    padding: 0.15rem 0.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-gold);
+    font-weight: 700;
+  }
+  .num { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .meter {
+    position: relative;
+    height: 16px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .meter > i { display: block; height: 100%; }
+  .meter > b {
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 1px 1px var(--color-bg);
+  }
+  .meter.life > i { background: var(--color-life); }
+  .meter.xp > i { background: var(--color-gold); }
+  .meter.risk > i { background: var(--color-muted); }
+  .meter.risk[data-heat="warm"] > i { background: var(--color-gold); }
+  .meter.risk[data-heat="hot"] > i { background: var(--color-life); }
+  .scene {
+    position: relative;
+    overflow: hidden;
+    background: var(--scene, var(--color-surface));
+    color: var(--color-fg);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: inset 3px 0 0 var(--color-gold);
+  }
+  .scene-mark {
+    position: absolute;
+    right: -0.25rem;
+    bottom: -0.75rem;
+    opacity: 0.14;
+    pointer-events: none;
+  }
+  .seal {
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent, var(--color-gold)) 28%, var(--color-bg));
+    box-shadow:
+      0 0 0 1px var(--accent, var(--color-gold)),
+      0 0 0 6px color-mix(in srgb, var(--accent, var(--color-gold)) 22%, transparent);
+    color: var(--accent, var(--color-gold));
+  }
+  .seal.lg { width: 112px; height: 112px; }
+  .slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    min-height: 104px;
+    padding: 0.6rem 0.35rem;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    border: 1px dashed var(--color-line);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+  .slot[data-filled="true"] {
+    border-style: solid;
+    border-color: var(--rarity, var(--color-line));
+  }
+  .doll {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      ". helm ."
+      "weapon chest trinket"
+      ". aura .";
+    gap: 0.75rem;
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+  .slot-helm { grid-area: helm; }
+  .slot-weapon { grid-area: weapon; }
+  .slot-chest { grid-area: chest; }
+  .slot-trinket { grid-area: trinket; }
+  .slot-aura { grid-area: aura; }
+  .rarity { color: var(--rarity); font-weight: 700; }
+  .dock {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .toast-wrap {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+    z-index: 45;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding-inline: 0.75rem;
+    pointer-events: none;
+  }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+  }
+  .modal-card {
+    width: min(100%, 40rem);
+    max-height: min(85vh, 52rem);
+    overflow: auto;
+  }
+  .flash {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    pointer-events: none;
+    box-shadow: inset 0 0 120px 28px var(--color-life);
+  }
+}
+
+[data-rarity="0"] { --rarity: #b9b9b9; }
+[data-rarity="1"] { --rarity: #4aa3ff; }
+[data-rarity="2"] { --rarity: #b06cff; }
+[data-rarity="3"] { --rarity: #ffb02e; }
+[data-rarity="4"] { --rarity: #ff3b5c; }
+[data-rarity="5"] { --rarity: #00e5ff; }
+[data-rarity="6"] { --rarity: #ffd700; }
+
+[data-class="guerreiro"] { --accent: #c44536; }
+[data-class="mago"] { --accent: #9b8fd4; }
+[data-class="arqueiro"] { --accent: #6a9a62; }
+[data-class="paladino"] { --accent: #e4c27a; }
+[data-class="assassino"] { --accent: #c46a8a; }
+
+[data-zone="rest"] { --scene: #1a140f; }
+[data-zone="down"] { --scene: #2a1414; box-shadow: inset 3px 0 0 var(--color-life); }
+[data-zone="t1"] { --scene: #262018; }
+[data-zone="t2"] { --scene: #2a241c; }
+[data-zone="t3"] { --scene: #2a2038; }
+[data-zone="h1"] { --scene: #163024; }
+[data-zone="h2"] { --scene: #1a3322; }
+[data-zone="h3"] { --scene: #15283a; }
+[data-zone="h4"] { --scene: #3a1c14; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .glow[data-rarity="4"],
+  .glow[data-rarity="5"],
+  .glow[data-rarity="6"] {
+    animation: rarity-pulse 2.2s ease-in-out infinite;
+  }
+  .flash { animation: fade-flash 1.2s ease-out forwards; }
+}
+
+@keyframes rarity-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--rarity); }
+  50% { box-shadow: 0 0 18px -2px var(--rarity); }
+}
+@keyframes fade-flash {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active:not(:disabled) { transform: none; }
+}
+
+@media (min-width: 768px) {
+  .toast-wrap { bottom: 1.5rem; }
+}
