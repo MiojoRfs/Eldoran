@@ -110,36 +110,92 @@ export function HeroPanel() {
   );
 }
 
+const POS: Record<string, [number, number]> = {
+  elmo: [50, 10],
+  colar: [50, 26],
+  peitoral: [50, 43],
+  calca: [50, 62],
+  bota: [50, 84],
+  arma: [13, 42],
+  luva: [87, 42],
+  anel1: [13, 60],
+  anel2: [87, 60],
+  aura: [87, 12],
+};
+
 function Equipment() {
   const player = useGame((s) => s.player)!;
   const unequip = useGame((s) => s.unequip);
   const equip = useGame((s) => s.equip);
   const sell = useGame((s) => s.sell);
   const sellAll = useGame((s) => s.sellAll);
+  const [sel, setSel] = useState<string | null>(null);
   const bag = Object.entries(player.inv).filter(([, q]) => q > 0);
+  const cur = SLOTS.find((s) => s.k === sel);
+  const curId = cur ? player.eq[cur.k] : null;
+  const curIt = curId ? ITEMS[curId] : undefined;
   return (
     <div>
       <h3 className="mb-3 text-gold">Boneco</h3>
-      <div className="doll">
+      <div className="paperdoll">
+        <svg viewBox="0 0 100 133" aria-hidden fill="currentColor" stroke="currentColor">
+          <defs>
+            <radialGradient id="pd-glow" cx="50%" cy="45%" r="55%">
+              <stop offset="0%" style={{ stopColor: "var(--color-gold)", stopOpacity: 0.14 }} />
+              <stop offset="100%" style={{ stopColor: "var(--color-gold)", stopOpacity: 0 }} />
+            </radialGradient>
+          </defs>
+          <rect width="100" height="133" fill="url(#pd-glow)" stroke="none" />
+          <g opacity="0.55">
+            <circle cx="50" cy="13" r="8" stroke="none" />
+            <rect x="46" y="20" width="8" height="12" rx="3" stroke="none" />
+            <rect x="34" y="31" width="32" height="47" rx="10" stroke="none" />
+            <path d="M35 34 L15 56 M65 34 L85 56" strokeWidth="8" strokeLinecap="round" fill="none" />
+            <rect x="37" y="74" width="12" height="46" rx="6" stroke="none" />
+            <rect x="51" y="74" width="12" height="46" rx="6" stroke="none" />
+          </g>
+        </svg>
         {SLOTS.map((slot) => {
+          const pos = POS[slot.k];
+          if (!pos) return null;
           const id = player.eq[slot.k];
           const it = id ? ITEMS[id] : undefined;
           return (
             <button
               key={slot.k}
               type="button"
-              className={`slot ${slot.area}`}
+              className={`pd-slot ${it ? "glow" : ""}`}
+              style={{ left: `${pos[0]}%`, top: `${pos[1]}%` }}
               data-filled={it ? "true" : "false"}
               data-rarity={it ? it.r || 0 : undefined}
-              onClick={() => it && unequip(slot.k)}
-              title={it ? "Tirar" : "Vazio"}
+              data-active={sel === slot.k || undefined}
+              aria-label={`${slot.n}: ${it ? it.n : "vazio"}`}
+              title={`${slot.n}: ${it ? it.n : "vazio"}`}
+              onClick={() => setSel(sel === slot.k ? null : slot.k)}
             >
-              <ItemMark id={id} slot={slot.k} className="size-7" />
-              <span className="text-sm text-muted">{slot.n}</span>
-              <span className="line-clamp-2 text-sm">{it ? it.n : "Vazio"}</span>
+              <ItemMark id={id} slot={slot.k} className={`size-[55%] ${it ? "" : "opacity-40"}`} />
             </button>
           );
         })}
+      </div>
+      <div className="row mt-3 min-h-20 p-3 text-sm" data-rarity={curIt ? curIt.r || 0 : undefined}>
+        {!cur ? (
+          <p className="text-muted">Toque em um espaço para ver o item.</p>
+        ) : curIt ? (
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-muted">{cur.n}</div>
+              <div className="truncate text-base">{curIt.n}</div>
+              <div>
+                <span className="rarity">{RARITY[curIt.r || 0]}</span>
+                {itemLines(curIt).length ? ` · ${itemLines(curIt).join(", ")}` : ""}
+              </div>
+            </div>
+            <button type="button" className="btn btn-ghost shrink-0" onClick={() => unequip(cur.k)}>Tirar</button>
+          </div>
+        ) : (
+          <p className="text-muted">{cur.n}: vazio. Equipe um item da mochila.</p>
+        )}
       </div>
       <div className="mt-6 mb-3 flex flex-wrap items-center gap-2">
         <h3 className="text-gold">Mochila</h3>

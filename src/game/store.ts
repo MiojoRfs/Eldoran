@@ -465,7 +465,12 @@ export const useGame = create<State>((set, get) => ({
     mutate((p) => {
       const it = ITEMS[id];
       if (!it?.s || (p.inv[id] || 0) <= 0) return "Item indisponível.";
-      
+
+      if (it.cls && !it.cls.includes(p.cls)) {
+        const permitidas = it.cls.map((c) => CLASSES[c].n).join(" ou ");
+        return `Apenas ${permitidas} pode equipar este item.`;
+      }
+
       let targetSlot = it.s;
       if (it.s === "anel") {
         if (!p.eq.anel1) targetSlot = "anel1";

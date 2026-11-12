@@ -90,20 +90,19 @@ function gear(id: string, item: Item) {
   if (typeof item.r === "number") POOLS[item.r].push(id);
 }
 
-gear("espada", { n: "Espada enferrujada", s: "arma", b: { for: 3 }, v: 8 });
-gear("cajado", { n: "Cajado de carvalho", s: "arma", b: { int: 3 }, v: 8 });
-gear("arco", { n: "Arco curto", s: "arma", b: { agi: 3 }, v: 8 });
-gear("martelo", { n: "Martelo bento", s: "arma", b: { for: 2, vit: 1 }, v: 8 });
-gear("adaga", { n: "Adaga sombria", s: "arma", b: { agi: 2, sor: 1 }, v: 8 });
-gear("couro", { n: "Gibão de couro", s: "peitoral", b: { vit: 2 }, v: 15 }); // Trocado de armadura para peitoral
-gear("anel", { n: "Anel de cobre", s: "anel", b: { sor: 2 }, v: 20 });       // Trocado de acessorio para anel
+gear("espada", { n: "Espada enferrujada", s: "arma", cls: ["guerreiro"], b: { for: 3 }, v: 8 });
+gear("cajado", { n: "Cajado de carvalho", s: "arma", cls: ["mago"], b: { int: 3 }, v: 8 });
+gear("arco", { n: "Arco curto", s: "arma", cls: ["arqueiro"], b: { agi: 3 }, v: 8 });
+gear("martelo", { n: "Martelo bento", s: "arma", cls: ["paladino"], b: { for: 2, vit: 1 }, v: 8 });
+gear("adaga", { n: "Adaga sombria", s: "arma", cls: ["assassino"], b: { agi: 2, sor: 1 }, v: 8 });
+gear("couro", { n: "Gibão de couro", s: "peitoral", b: { vit: 2 }, v: 15 });
+gear("anel", { n: "Anel de cobre", s: "anel", b: { sor: 2 }, v: 20 });
 gear("pele", { n: "Pele de lobo", v: 6 });
 gear("gosma", { n: "Gosma pantanosa", v: 12 });
 gear("gema", { n: "Gema bruta", v: 40 });
 gear("ferro", { n: "Barra de ferro", v: 5 });
 
 const PIECES: { slot: SlotKey; name: string; attr: AttrKey }[] = [
-  { slot: "arma", name: "Lâmina", attr: "for" },
   { slot: "peitoral", name: "Peitoral", attr: "vit" },
   { slot: "elmo", name: "Elmo", attr: "agi" },
   { slot: "bota", name: "Botas", attr: "agi" },
@@ -128,6 +127,7 @@ for (const piece of PIECES) {
   });
 }
 
+// ================= AURAS, SECRETOS & ADMINISTRADOR =================
 gear("aura2", { n: "Brasa Rubra", s: "aura", r: 2, au: 1, b: { int: 8 }, v: 60 });
 gear("aura3", { n: "Chama Solar", s: "aura", r: 3, au: 2, b: { int: 16, for: 8 }, v: 200 });
 gear("aura4", { n: "Vazio Roxo", s: "aura", r: 4, au: 3, b: { int: 30, agi: 15 }, v: 600 });
@@ -136,6 +136,79 @@ gear("sec1", { n: "Elmo do Horizonte Estelar", s: "elmo", r: 5, b: { vit: 50, in
 gear("sec2", { n: "Véu da Singularidade", s: "aura", r: 5, au: 4, b: { agi: 45, sor: 30 }, ps: { ex: 0.05 }, v: 5000 });
 gear("adm0", { n: "Cetro do Desenvolvedor Absoluto", s: "arma", r: 6, b: { for: 120, int: 120 }, ps: { xp: 0.8, ex: 0.05 }, v: 50000 });
 gear("adm1", { n: "Aura Divina do Administrador", s: "aura", r: 6, au: 5, b: { vit: 100, sor: 80 }, ps: { ig: 0.3, ex: 0.1 }, v: 50000 });
+
+// ================= ARMAS DE MAGO (CAJADOS & CETROS) =================
+gear("cajado_fogo1", { n: "Cajado de Brasa", s: "arma", r: 1, cls: ["mago"], b: { int: 6 }, ps: { dmg: 0.12 }, v: 30 });
+gear("cajado_fogo2", { n: "Cajado Piromante", s: "arma", r: 2, cls: ["mago"], b: { int: 14 }, ps: { dmg: 0.22 }, v: 90 });
+gear("cajado_fogo3", { n: "Cajado do Sol Negro", s: "arma", r: 3, cls: ["mago"], b: { int: 28, for: 10 }, ps: { dmg: 0.35 }, v: 300 });
+gear("cajado_fogo4", { n: "Cajado do Cataclismo Ígneo", s: "arma", r: 4, cls: ["mago"], b: { int: 55, for: 20 }, ps: { dmg: 0.55 }, v: 900 });
+
+gear("cajado_nat1", { n: "Cajado da Clareira", s: "arma", r: 1, cls: ["mago"], b: { int: 5, vit: 3 }, ps: { xp: 0.15 }, v: 30 });
+gear("cajado_nat2", { n: "Cajado Ancestral", s: "arma", r: 2, cls: ["mago"], b: { int: 12, vit: 8 }, ps: { xp: 0.28, hp: 0.1 }, v: 90 });
+gear("cajado_nat3", { n: "Cajado de Yggdrasil", s: "arma", r: 3, cls: ["mago"], b: { int: 24, vit: 18 }, ps: { xp: 0.45, hp: 0.2 }, v: 300 });
+
+gear("cajado_cos2", { n: "Cajado Astral", s: "arma", r: 2, cls: ["mago"], b: { int: 12, agi: 6 }, ps: { ig: 0.15, crit: 0.05 }, v: 95 });
+gear("cajado_cos4", { n: "Cetro da Singularidade", s: "arma", r: 4, cls: ["mago"], b: { int: 48, agi: 25 }, ps: { ig: 0.28, crit: 0.12 }, v: 950 });
+
+// ================= ARMAS DE GUERREIRO (ESPADAS & MACHADOS) =================
+gear("espada_ber1", { n: "Machado de Batalha", s: "arma", r: 1, cls: ["guerreiro"], b: { for: 7 }, ps: { dmg: 0.1 }, v: 30 });
+gear("espada_ber2", { n: "Montante de Aço Negro", s: "arma", r: 2, cls: ["guerreiro"], b: { for: 16 }, ps: { dmg: 0.2 }, v: 90 });
+gear("espada_ber3", { n: "Machado do Colosso", s: "arma", r: 3, cls: ["guerreiro"], b: { for: 32, vit: 10 }, ps: { dmg: 0.32 }, v: 300 });
+gear("espada_ber4", { n: "Espada do Apocalipse", s: "arma", r: 4, cls: ["guerreiro"], b: { for: 65, vit: 20 }, ps: { dmg: 0.5 }, v: 900 });
+
+gear("espada_due1", { n: "Sabre de Prata", s: "arma", r: 1, cls: ["guerreiro"], b: { for: 4, agi: 4 }, ps: { crit: 0.06 }, v: 30 });
+gear("espada_due2", { n: "Katana do Vento", s: "arma", r: 2, cls: ["guerreiro"], b: { for: 10, agi: 10 }, ps: { crit: 0.12, ig: 0.1 }, v: 90 });
+gear("espada_due3", { n: "Lâmina da Tempestade", s: "arma", r: 3, cls: ["guerreiro"], b: { for: 20, agi: 22 }, ps: { crit: 0.18, ig: 0.2 }, v: 300 });
+
+// ================= ARMAS DE ARQUEIRO (ARCOS & BESTAS) =================
+gear("arco_snp1", { n: "Arco Longo de Teixo", s: "arma", r: 1, cls: ["arqueiro"], b: { agi: 7 }, ps: { crit: 0.08 }, v: 30 });
+gear("arco_snp2", { n: "Arco de Mithril", s: "arma", r: 2, cls: ["arqueiro"], b: { agi: 15 }, ps: { crit: 0.14, ig: 0.12 }, v: 90 });
+gear("arco_snp3", { n: "Arco Caçador de Dragões", s: "arma", r: 3, cls: ["arqueiro"], b: { agi: 30, for: 10 }, ps: { crit: 0.2, ig: 0.25 }, v: 300 });
+gear("arco_snp4", { n: "Arco Estelar", s: "arma", r: 4, cls: ["arqueiro"], b: { agi: 60, for: 20 }, ps: { crit: 0.25, dmg: 0.35 }, v: 900 });
+
+gear("arco_oro1", { n: "Besta de Caça", s: "arma", r: 1, cls: ["arqueiro"], b: { agi: 4, sor: 4 }, ps: { gd: 0.2 }, v: 30 });
+gear("arco_oro2", { n: "Besta Dourada", s: "arma", r: 2, cls: ["arqueiro"], b: { agi: 9, sor: 10 }, ps: { gd: 0.35 }, v: 90 });
+gear("arco_oro3", { n: "Arco da Fortuna", s: "arma", r: 3, cls: ["arqueiro"], b: { agi: 18, sor: 22 }, ps: { gd: 0.6, xp: 0.15 }, v: 300 });
+
+// ================= ARMAS DE ASSASSINO (ADAGAS & GARRAS) =================
+gear("adaga_cei1", { n: "Adaga Envenenada", s: "arma", r: 1, cls: ["assassino"], b: { agi: 6, sor: 2 }, ps: { ex: 0.015 }, v: 30 });
+gear("adaga_cei2", { n: "Lâmina Oculta", s: "arma", r: 2, cls: ["assassino"], b: { agi: 14, sor: 5 }, ps: { ex: 0.03, crit: 0.08 }, v: 90 });
+gear("adaga_cei3", { n: "Adaga do Ceifador", s: "arma", r: 3, cls: ["assassino"], b: { agi: 28, sor: 12 }, ps: { ex: 0.05, crit: 0.14 }, v: 300 });
+gear("adaga_cei4", { n: "Presa do Abismo", s: "arma", r: 4, cls: ["assassino"], b: { agi: 55, sor: 25 }, ps: { ex: 0.08, dmg: 0.3 }, v: 900 });
+
+gear("adaga_lad1", { n: "Punhal Serrilhado", s: "arma", r: 1, cls: ["assassino"], b: { agi: 4, sor: 5 }, ps: { gd: 0.22 }, v: 30 });
+gear("adaga_lad2", { n: "Punhal de Ouro", s: "arma", r: 2, cls: ["assassino"], b: { agi: 8, sor: 12 }, ps: { gd: 0.4, crit: 0.06 }, v: 90 });
+gear("adaga_lad3", { n: "Adaga da Ganância", s: "arma", r: 3, cls: ["assassino"], b: { agi: 16, sor: 26 }, ps: { gd: 0.7 }, v: 300 });
+
+// ================= ARMAS DE PALADINO (MARTELOS, MAÇAS & LANÇAS) =================
+gear("mart_cru1", { n: "Maça de Guerra", s: "arma", r: 1, cls: ["paladino"], b: { for: 5, vit: 3 }, ps: { dmg: 0.12 }, v: 30 });
+gear("mart_cru2", { n: "Martelo do Julgamento", s: "arma", r: 2, cls: ["paladino"], b: { for: 12, vit: 6 }, ps: { dmg: 0.24 }, v: 90 });
+gear("mart_cru3", { n: "Martelo da Luz Solar", s: "arma", r: 3, cls: ["paladino"], b: { for: 25, vit: 14 }, ps: { dmg: 0.38 }, v: 300 });
+gear("mart_cru4", { n: "Martelo Celestial", s: "arma", r: 4, cls: ["paladino"], b: { for: 50, vit: 30 }, ps: { dmg: 0.52, hp: 0.15 }, v: 900 });
+
+gear("mart_gua1", { n: "Lança Sagrada", s: "arma", r: 1, cls: ["paladino"], b: { vit: 6, int: 2 }, ps: { hp: 0.15, xp: 0.1 }, v: 30 });
+gear("mart_gua2", { n: "Maça do Bastião", s: "arma", r: 2, cls: ["paladino"], b: { vit: 15, int: 5 }, ps: { hp: 0.28, xp: 0.2 }, v: 90 });
+gear("mart_gua3", { n: "Alabarda do Arcanjo", s: "arma", r: 3, cls: ["paladino"], b: { vit: 32, int: 12 }, ps: { hp: 0.45, xp: 0.35 }, v: 300 });
+
+// ================= ACESSÓRIOS & PEÇAS DE BUILD ESTRATÉGICA =================
+// Foco em Farm (XP e Ouro)
+gear("anel_xp1", { n: "Anel do Aprendiz", s: "anel", r: 1, b: { int: 3 }, ps: { xp: 0.12 }, v: 35 });
+gear("anel_xp2", { n: "Anel do Erudito", s: "anel", r: 2, b: { int: 8 }, ps: { xp: 0.25 }, v: 110 });
+gear("anel_ouro1", { n: "Anel da Avareza", s: "anel", r: 1, b: { sor: 4 }, ps: { gd: 0.18 }, v: 35 });
+gear("anel_ouro2", { n: "Anel do Magnata", s: "anel", r: 2, b: { sor: 10 }, ps: { gd: 0.35 }, v: 110 });
+gear("colar_sabio", { n: "Amuleto da Clarividência", s: "colar", r: 2, b: { int: 10, sor: 6 }, ps: { xp: 0.2, gd: 0.2 }, v: 130 });
+
+// Foco em Dano, Crítico e Agilidade (Glass Cannon)
+gear("anel_crit1", { n: "Anel da Precisão", s: "anel", r: 1, b: { agi: 4 }, ps: { crit: 0.05 }, v: 35 });
+gear("anel_crit2", { n: "Anel do Carrasco", s: "anel", r: 2, b: { agi: 8, for: 5 }, ps: { crit: 0.09, dmg: 0.1 }, v: 120 });
+gear("colar_sangue", { n: "Gargantilha da Fúria", s: "colar", r: 2, b: { for: 10, agi: 8 }, ps: { dmg: 0.18, ig: 0.1 }, v: 140 });
+gear("luva_arcana", { n: "Luvas do Tecelão", s: "luva", r: 2, b: { int: 12, agi: 4 }, ps: { dmg: 0.12, crit: 0.05 }, v: 100 });
+gear("bota_vento", { n: "Botas do Passo Leve", s: "bota", r: 2, b: { agi: 14, sor: 4 }, ps: { crit: 0.07 }, v: 100 });
+
+// Foco em Sobrevivência (Tanque)
+gear("colar_colosso", { n: "Coração de Pedra", s: "colar", r: 2, b: { vit: 16 }, ps: { hp: 0.22 }, v: 130 });
+gear("peitoral_guard", { n: "Couraça do Bastião", s: "peitoral", r: 2, b: { vit: 18, for: 6 }, ps: { hp: 0.25 }, v: 150 });
+gear("elmo_guard", { n: "Elmo do Baluarte", s: "elmo", r: 2, b: { vit: 14, for: 4 }, ps: { hp: 0.15 }, v: 110 });
 
 export const TRAINS: Zone[] = [
   { id: "t1", n: "Boneco de palha", kind: "t", req: 1, xp: 1.2, d: "Golpes repetidos no pátio da vila." },
@@ -155,15 +228,86 @@ export function findZone(act: Player["act"]): Zone | undefined {
   return (act.t === "h" ? HUNTS : TRAINS).find((z) => z.id === act.id);
 }
 
-export const SHOP = ["ferro", "arma0", "peitoral0", "elmo0", "elmo1", "colar0", "anel1"];
+// ================= LOJA FUNCIONAL (MATERIAIS + SET INICIAL + ARMAS TIER 1) =================
+export const SHOP = [
+  "ferro",
+  "pele",
+  "gosma",
+  "couro",
+  "elmo0",
+  "luva0",
+  "calca0",
+  "bota0",
+  "colar0",
+  "anel",
+  "espada_ber1",
+  "cajado_fogo1",
+  "arco_snp1",
+  "adaga_cei1",
+  "mart_cru1",
+];
 
+// ================= RECEITAS DO FERREIRO (CALIBRADAS PARA PROGRESSÃO) =================
 export const RECIPES: { id: string; mats: Record<string, number>; gold: number }[] = [
-  { id: "arma1", mats: { ferro: 4, pele: 5 }, gold: 80 },
-  { id: "arma2", mats: { ferro: 10, gosma: 6 }, gold: 300 },
-  { id: "arma3", mats: { ferro: 20, gema: 4 }, gold: 1200 },
-  { id: "armadura1", mats: { ferro: 4, pele: 8 }, gold: 80 },
-  { id: "armadura2", mats: { ferro: 10, gosma: 9 }, gold: 300 },
-  { id: "armadura3", mats: { ferro: 20, gema: 7 }, gold: 1200 },
+  // --- Acessórios Estratégicos (Definem a build cedo) ---
+  { id: "anel_xp1", mats: { ferro: 8, gosma: 4 }, gold: 240 },
+  { id: "anel_ouro1", mats: { ferro: 8, pele: 6 }, gold: 240 },
+  { id: "anel_crit1", mats: { ferro: 8, pele: 5, gosma: 3 }, gold: 260 },
+  { id: "anel_xp2", mats: { ferro: 22, gosma: 12, gema: 2 }, gold: 900 },
+  { id: "anel_ouro2", mats: { ferro: 22, pele: 16, gema: 2 }, gold: 900 },
+  { id: "anel_crit2", mats: { ferro: 24, pele: 14, gema: 3 }, gold: 1000 },
+  { id: "colar_sabio", mats: { ferro: 26, gosma: 16, gema: 3 }, gold: 1150 },
+  { id: "colar_sangue", mats: { ferro: 28, pele: 20, gema: 3 }, gold: 1250 },
+  { id: "colar_colosso", mats: { ferro: 28, gosma: 18, gema: 3 }, gold: 1250 },
+
+  // --- Armaduras & Peças Principais ---
+  { id: "peitoral1", mats: { ferro: 12, pele: 10 }, gold: 320 },
+  { id: "elmo1", mats: { ferro: 10, pele: 6 }, gold: 260 },
+  { id: "calca1", mats: { ferro: 10, pele: 8 }, gold: 280 },
+  { id: "luva1", mats: { ferro: 9, pele: 6 }, gold: 250 },
+  { id: "bota1", mats: { ferro: 9, pele: 7 }, gold: 250 },
+  { id: "peitoral2", mats: { ferro: 28, pele: 18, gema: 2 }, gold: 1050 },
+  { id: "peitoral_guard", mats: { ferro: 34, gosma: 20, gema: 3 }, gold: 1400 },
+  { id: "elmo_guard", mats: { ferro: 24, gosma: 15, gema: 2 }, gold: 980 },
+  { id: "luva_arcana", mats: { ferro: 22, gosma: 14, gema: 2 }, gold: 920 },
+  { id: "bota_vento", mats: { ferro: 22, pele: 16, gema: 2 }, gold: 920 },
+  { id: "peitoral3", mats: { ferro: 65, pele: 40, gosma: 30, gema: 8 }, gold: 3800 },
+
+  // --- Armas de Mago ---
+  { id: "cajado_nat1", mats: { ferro: 10, gosma: 6 }, gold: 290 },
+  { id: "cajado_fogo2", mats: { ferro: 26, gosma: 14, gema: 2 }, gold: 980 },
+  { id: "cajado_nat2", mats: { ferro: 26, gosma: 16, gema: 2 }, gold: 980 },
+  { id: "cajado_cos2", mats: { ferro: 28, pele: 12, gema: 3 }, gold: 1100 },
+  { id: "cajado_fogo3", mats: { ferro: 58, gosma: 35, gema: 7 }, gold: 3500 },
+  { id: "cajado_nat3", mats: { ferro: 58, gosma: 40, gema: 7 }, gold: 3500 },
+
+  // --- Armas de Guerreiro ---
+  { id: "espada_due1", mats: { ferro: 11, pele: 5 }, gold: 290 },
+  { id: "espada_ber2", mats: { ferro: 28, pele: 14, gema: 2 }, gold: 1000 },
+  { id: "espada_due2", mats: { ferro: 26, pele: 16, gema: 2 }, gold: 1000 },
+  { id: "espada_ber3", mats: { ferro: 62, pele: 32, gema: 7 }, gold: 3550 },
+  { id: "espada_due3", mats: { ferro: 60, pele: 36, gema: 7 }, gold: 3550 },
+
+  // --- Armas de Arqueiro ---
+  { id: "arco_oro1", mats: { ferro: 10, pele: 7 }, gold: 290 },
+  { id: "arco_snp2", mats: { ferro: 26, pele: 16, gema: 2 }, gold: 990 },
+  { id: "arco_oro2", mats: { ferro: 24, pele: 18, gema: 2 }, gold: 990 },
+  { id: "arco_snp3", mats: { ferro: 60, pele: 38, gema: 7 }, gold: 3500 },
+  { id: "arco_oro3", mats: { ferro: 58, pele: 40, gema: 7 }, gold: 3500 },
+
+  // --- Armas de Assassino ---
+  { id: "adaga_lad1", mats: { ferro: 10, gosma: 5, pele: 4 }, gold: 290 },
+  { id: "adaga_cei2", mats: { ferro: 26, gosma: 16, gema: 2 }, gold: 1000 },
+  { id: "adaga_lad2", mats: { ferro: 24, pele: 18, gema: 2 }, gold: 1000 },
+  { id: "adaga_cei3", mats: { ferro: 60, gosma: 36, gema: 7 }, gold: 3550 },
+  { id: "adaga_lad3", mats: { ferro: 58, pele: 40, gema: 7 }, gold: 3550 },
+
+  // --- Armas de Paladino ---
+  { id: "mart_gua1", mats: { ferro: 11, gosma: 5 }, gold: 290 },
+  { id: "mart_cru2", mats: { ferro: 28, pele: 14, gema: 2 }, gold: 1000 },
+  { id: "mart_gua2", mats: { ferro: 28, gosma: 16, gema: 2 }, gold: 1000 },
+  { id: "mart_cru3", mats: { ferro: 62, pele: 34, gema: 7 }, gold: 3550 },
+  { id: "mart_gua3", mats: { ferro: 62, gosma: 36, gema: 7 }, gold: 3550 },
 ];
 
 export const SKILLS: Record<ClassId, Skill[]> = {
@@ -205,8 +349,14 @@ export const SLOTS: { k: SlotKey; n: string; area: string }[] = [
 export const POWER = ["Nenhuma", "Faísca", "Incandescência", "Tempestade"];
 
 export const SKINS: Record<string, string> = {
-  armadura3: "Cavaleiro-dragão",
-  armadura4: "Senhor do Cataclismo",
+  peitoral3: "Cavaleiro-dragão",
+  peitoral4: "Senhor do Cataclismo",
+  peitoral_guard: "Muralha Viva",
+  cajado_fogo4: "Senhor das Cinzas",
+  espada_ber4: "Arauto do Apocalipse",
+  arco_snp4: "Olho Estelar",
+  adaga_cei4: "Sombra do Abismo",
+  mart_cru4: "Campeão Celestial",
   sec0: "Sombra do Vazio",
   sec1: "Viajante estelar",
   sec2: "Singularidade",
@@ -286,10 +436,17 @@ export function skinName(p: Player) {
 
 export function itemLines(it: Item) {
   const lines: string[] = [];
+  if (it.cls && it.cls.length > 0) {
+    lines.push(`Classe: ${it.cls.map((c) => CLASSES[c].n).join(", ")}`);
+  }
   for (const k of ["for", "agi", "int", "sor", "vit"] as AttrKey[]) {
     if (it.b?.[k]) lines.push(`+${it.b[k]} ${ATTR_NAME[k]}`);
   }
+  if (it.ps?.dmg) lines.push(`+${Math.round(it.ps.dmg * 100)}% de dano`);
+  if (it.ps?.hp) lines.push(`+${Math.round(it.ps.hp * 100)}% de vida máxima`);
+  if (it.ps?.crit) lines.push(`+${Math.round(it.ps.crit * 100)}% de chance crítica`);
   if (it.ps?.xp) lines.push(`+${Math.round(it.ps.xp * 100)}% de ganho de XP`);
+  if (it.ps?.gd) lines.push(`+${Math.round(it.ps.gd * 100)}% de ouro`);
   if (it.ps?.ig) lines.push(`ignora ${Math.round(it.ps.ig * 100)}% da defesa`);
   if (it.ps?.ex) lines.push(`${Math.round(it.ps.ex * 100)}% de chance de executar`);
   return lines;

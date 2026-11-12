@@ -13,16 +13,25 @@ export type ClassMods = {
   regen?: number;
 };
 
-export type ItemPassives = { xp?: number; ig?: number; ex?: number };
+export type ItemPassives = {
+  xp?: number;   // +% de XP
+  gd?: number;   // +% de Ouro
+  dmg?: number;  // +% de Dano total
+  crit?: number; // +% de Chance Crítica
+  hp?: number;   // +% de Vida máxima
+  ig?: number;   // Ignora % da defesa inimiga
+  ex?: number;   // Chance de execução (hit-kill)
+};
 
 export type Item = {
   n: string;
   s?: SlotKey;
   r?: number;
-  b?: Partial<Record<AttrKey, number>>;
-  v: number;
   au?: number;
+  cls?: ClassId[]; // Se definido, só essas classes podem equipar
+  b?: Partial<Record<AttrKey, number>>;
   ps?: ItemPassives;
+  v: number;
 };
 
 export type SkillFx = {

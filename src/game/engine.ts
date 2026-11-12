@@ -37,12 +37,12 @@ export function stats(p: Player, offline: boolean): Stats {
       bonus[k] += v;
     }
   }
-  const m = c.m;
-  const max = Math.floor((50 + attrs.vit * 10 + p.level * 5) * (1 + (m.hp || 0)));
-  const dmg = Math.floor((attrs.for * 2 + attrs.agi + attrs.int * 2 + p.level * 2) * (1 + (m.dmg || 0)));
-  const crit = Math.round(Math.min(60, attrs.agi * 0.5 + attrs.sor * 0.3 + (m.crit || 0) * 100) * 10) / 10;
+ const m = c.m;
+  const max = Math.floor((50 + attrs.vit * 10 + p.level * 5) * (1 + (m.hp || 0) + passive(p, "hp")));
+  const dmg = Math.floor((attrs.for * 2 + attrs.agi + attrs.int * 2 + p.level * 2) * (1 + (m.dmg || 0) + passive(p, "dmg")));
+  const crit = Math.round(Math.min(75, attrs.agi * 0.5 + attrs.sor * 0.3 + (m.crit || 0) * 100 + passive(p, "crit") * 100) * 10) / 10;
   const xm = 1 + (m.xp || 0) + attrs.int * 0.01 + passive(p, "xp") + skillVal(p, "xp", offline);
-  const gm = 1 + (m.gold || 0) + attrs.sor * 0.01 + skillVal(p, "gd", offline);
+  const gm = 1 + (m.gold || 0) + attrs.sor * 0.01 + passive(p, "gd") + skillVal(p, "gd", offline);
   const vr = 1 - Math.min(0.7, attrs.vit * 0.015);
   const base = Math.floor(dmg * 6 + max * 0.5 + (attrs.agi * 0.5 + attrs.sor * 0.3 + (m.crit || 0) * 100) * 8);
   const cp = (base * (1 + skillVal(p, "cp", offline))) | 0;
@@ -77,14 +77,13 @@ export function roll(lk: number) {
 export function cpDelta(p: Player, id: string) {
   const it = ITEMS[id];
   if (!it?.s) return 0;
+  if (it.cls && !it.cls.includes(p.cls)) return 0; // Não calcula CP para arma de outra classe
   const before = stats(p, false).cp;
   const n = structuredClone(p);
-  
   let target = it.s;
   if (it.s === "anel") {
     target = !p.eq.anel1 ? "anel1" : (!p.eq.anel2 ? "anel2" : "anel1");
   }
-  
   n.eq[target] = id;
   return stats(n, false).cp - before;
 }
