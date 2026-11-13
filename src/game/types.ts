@@ -1,7 +1,19 @@
 export const ATTR_KEYS = ["for", "agi", "int", "sor", "vit"] as const;
 export type AttrKey = (typeof ATTR_KEYS)[number];
 export type ClassId = "guerreiro" | "mago" | "arqueiro" | "paladino" | "assassino";
-export type SlotKey = "arma" | "peitoral" | "elmo" | "bota" | "calca" | "luva" | "colar" | "anel" | "anel1" | "anel2" | "aura";
+export type SlotKey =
+  | "arma"
+  | "peitoral"
+  | "elmo"
+  | "bota"
+  | "calca"
+  | "luva"
+  | "colar"
+  | "anel"
+  | "anel1"
+  | "anel2"
+  | "aura"
+  | "pet";
 export type ActKind = "t" | "h";
 
 export type ClassMods = {
@@ -52,10 +64,13 @@ export type Skill = {
   fx: SkillFx;
 };
 
+export type RealmId = "valete" | "proximo";
+
 export type Zone = {
   id: string;
   n: string;
   kind: ActKind;
+  realm?: RealmId;
   xp: number;
   d: string;
   req?: number;

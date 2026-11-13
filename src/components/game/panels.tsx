@@ -10,6 +10,7 @@ import {
   LEGENDS,
   potPrice,
   RARITY,
+  REALMS,
   RECIPES,
   SHOP,
   SLOTS,
@@ -19,22 +20,65 @@ import { cpDelta, odds, riskOf, stats } from "@/game/engine";
 import { dec, num, signed } from "@/game/format";
 import { api } from "@/game/api";
 import { useGame } from "@/game/store";
-import type { ClassId, Player, Zone } from "@/game/types";
+import type { ClassId, Player, RealmId, Zone } from "@/game/types";
 import { ClassMark, ItemMark, ZoneMark } from "./icons";
 
 export function Journey() {
+  const player = useGame((s) => s.player)!;
   const journey = useGame((s) => s.journey);
   const setJourney = useGame((s) => s.setJourney);
-  const list = journey === "treino" ? TRAINS : HUNTS;
+  const [realm, setRealm] = useState<RealmId>("valete");
+
+  const currentRealm = REALMS.find((r) => r.id === realm) || REALMS[0];
+  const unlocked = player.level >= currentRealm.reqLv;
+  const rawList = journey === "treino" ? TRAINS : HUNTS;
+  const list = rawList.filter((z) => (z.realm || "valete") === realm);
+
   return (
     <div>
-      <div className="mb-4 flex gap-2">
-        <button type="button" className={journey === "caca" ? "btn" : "btn btn-ghost"} onClick={() => setJourney("caca")}>Caça</button>
-        <button type="button" className={journey === "treino" ? "btn" : "btn btn-ghost"} onClick={() => setJourney("treino")}>Treino</button>
+      <div className="mb-3 flex flex-wrap gap-2">
+        {REALMS.map((r) => {
+          const ok = player.level >= r.reqLv;
+          const active = realm === r.id;
+          return (
+            <button
+              key={r.id}
+              type="button"
+              className={active ? "btn" : "btn btn-ghost"}
+              onClick={() => setRealm(r.id)}
+            >
+              {!ok && <Lock className="mr-1.5 inline size-3.5" aria-hidden />}
+              {r.n}
+            </button>
+          );
+        })}
       </div>
-      <div className="space-y-3">
-        {list.map((z) => <ZoneCard key={z.id} zone={z} />)}
-      </div>
+
+      <p className="mb-4 text-sm text-muted">{currentRealm.sub}</p>
+
+      {!unlocked ? (
+        <div className="row flex flex-col items-center gap-2 p-6 text-center">
+          <Lock className="size-7 text-gold" aria-hidden />
+          <div className="font-display text-lg">{currentRealm.n} bloqueado</div>
+          <p className="max-w-md text-sm text-muted">
+            Alcance o <b>Nível {currentRealm.reqLv}</b> para liberar a passagem para este reino.
+          </p>
+        </div>
+      ) : list.length === 0 ? (
+        <div className="row p-6 text-center text-sm text-muted">
+          Passagem aberta! As zonas de caça e treino deste reino chegarão na próxima atualização.
+        </div>
+      ) : (
+        <>
+          <div className="mb-4 flex gap-2">
+            <button type="button" className={journey === "caca" ? "btn" : "btn btn-ghost"} onClick={() => setJourney("caca")}>Caça</button>
+            <button type="button" className={journey === "treino" ? "btn" : "btn btn-ghost"} onClick={() => setJourney("treino")}>Treino</button>
+          </div>
+          <div className="space-y-3">
+            {list.map((z) => <ZoneCard key={z.id} zone={z} />)}
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -259,6 +303,7 @@ const POS: Record<string, [number, number]> = {
   anel1: [13, 60],
   anel2: [87, 60],
   aura: [87, 12],
+  pet: [13, 12],
 };
 
 function Equipment() {

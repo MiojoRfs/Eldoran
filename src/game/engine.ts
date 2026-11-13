@@ -144,9 +144,21 @@ export function simulate(src: Player, now: number): StepOut {
   if (z) {
     gain(p, z.xp * s.xm * t, offline, events);
     if (z.g) p.gold += z.g * s.gm * t;
-    for (const [id, chance] of z.l ?? []) {
-      const q = Math.floor(chance * s.gm * t + Math.random());
-      if (q > 0) p.inv[id] = (p.inv[id] || 0) + q;
+  for (const [id, chance] of z.l ?? []) {
+      const it = ITEMS[id];
+      if (offline && it?.s) continue; // Impede farmar pets/equipamentos raros offline
+      const mult = it?.s ? 1 : s.gm;   // Ouro multiplica materiais, não a chance do pet
+      const q = Math.floor(chance * mult * t + Math.random());
+      if (q > 0) {
+        p.inv[id] = (p.inv[id] || 0) + q;
+        const r = it?.r || 0;
+        if (it && r >= 3) {
+          p.mr = Math.max(p.mr || 0, r);
+          events.push({ kind: "drop", text: `${it.n}`, rarity: r });
+          rare.push({ id, rarity: r });
+          if (r >= 5 && (!modal || r >= (ITEMS[modal]?.r || 0))) modal = id;
+        }
+      }
     }
     if (hunting && t > 0) {
       const h = hunt(p, z, s, t, offline, events);
@@ -232,7 +244,7 @@ const p: Player = {
     pts: 0,
     at: { ...c.a },
     inv: { couro: 1, anel: 1 },
-    eq: { arma: c.w, peitoral: null, elmo: null, bota: null, calca: null, luva: null, colar: null, anel: null, anel1: null, anel2: null, aura: null },
+    eq: { arma: c.w, peitoral: null, elmo: null, bota: null, calca: null, luva: null, colar: null, anel: null, anel1: null, anel2: null, aura: null, pet: null},
     act: null,
     hp: 1,
     last: Date.now(),
@@ -250,7 +262,7 @@ export function createDemo(): Player {
   p.pts = 6;
   p.at = { for: 12, agi: 6, int: 8, sor: 5, vit: 19 };
   p.inv = { pele: 8, gosma: 3, ferro: 6, gema: 1, arma1: 1, couro: 1 };
-  p.eq = { arma: "martelo", peitoral: "peitoral1", elmo: "elmo1", bota: null, calca: null, luva: null, colar: null, anel: null, anel1: "anel", anel2: null, aura: null };
+  p.eq = { arma: "martelo", peitoral: "peitoral1", elmo: "elmo1", bota: null, calca: null, luva: null, colar: null, anel: null, anel1: "anel", anel2: null, aura: null, pet: null };
   p.act = { t: "h", id: "h1" };
   p.fg = 2;
   p.dd = 1;
@@ -305,6 +317,7 @@ eq: {
       anel1: eqIn.anel1 ?? eqIn.anel ?? null, // Migra o anel antigo pra cá
       anel2: eqIn.anel2 ?? null,
       aura: eqIn.aura ?? null,
+      pet: eqIn.pet ?? null,
     },
     act,
     hp: Number(src.hp) || 0,
@@ -321,5 +334,5 @@ eq: {
 }
 
 export function emptySlots(): Record<SlotKey, string | null> {
-  return { arma: null, peitoral: null, elmo: null, bota: null, calca: null, luva: null, colar: null, anel: null, anel1: null, anel2: null, aura: null };
+  return { arma: null, peitoral: null, elmo: null, bota: null, calca: null, luva: null, colar: null, anel: null, anel1: null, anel2: null, aura: null, pet:  null };
 }

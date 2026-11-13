@@ -1,4 +1,4 @@
-import type { AttrKey, ClassId, ClassMods, Item, Player, Skill, SlotKey, Zone } from "./types";
+import type { AttrKey, ClassId, ClassMods, Item, Player, RealmId, Skill, SlotKey, Zone } from "./types";
 
 export const VERSION = "1.4.0";
 export const SRV = "https://rpg-1-vizh.onrender.com";
@@ -127,15 +127,70 @@ for (const piece of PIECES) {
   });
 }
 
+// Compatibilidade com armas de saves antigos (não entra nas POOLS de drop)
+TIER_NAMES.forEach((tier, r) => {
+  ITEMS[`arma${r}`] = {
+    n: `Espada ${tier}`,
+    s: "arma",
+    r,
+    b: { for: TIER_BONUS[r] },
+    v: TIER_VALUE[r],
+  };
+});
+
 // ================= AURAS, SECRETOS & ADMINISTRADOR =================
 gear("aura2", { n: "Brasa Rubra", s: "aura", r: 2, au: 1, b: { int: 8 }, v: 60 });
-gear("aura3", { n: "Chama Solar", s: "aura", r: 3, au: 2, b: { int: 16, for: 8 }, v: 200 });
+gear("aura3", { n: "Aura Esmeralda", s: "aura", r: 3, au: 2, b: { int: 16, for: 8 }, v: 200 });
 gear("aura4", { n: "Vazio Roxo", s: "aura", r: 4, au: 3, b: { int: 30, agi: 15 }, v: 600 });
 gear("sec0", { n: "Lâmina do Vazio Ilimitado", s: "arma", r: 5, b: { for: 60, agi: 30 }, ps: { ig: 0.3 }, v: 5000 });
 gear("sec1", { n: "Elmo do Horizonte Estelar", s: "elmo", r: 5, b: { vit: 50, int: 40 }, ps: { xp: 0.5 }, v: 5000 });
 gear("sec2", { n: "Véu da Singularidade", s: "aura", r: 5, au: 4, b: { agi: 45, sor: 30 }, ps: { ex: 0.05 }, v: 5000 });
 gear("adm0", { n: "Cetro do Desenvolvedor Absoluto", s: "arma", r: 6, b: { for: 120, int: 120 }, ps: { xp: 0.8, ex: 0.05 }, v: 50000 });
 gear("adm1", { n: "Aura Divina do Administrador", s: "aura", r: 6, au: 5, b: { vit: 100, sor: 80 }, ps: { ig: 0.3, ex: 0.1 }, v: 50000 });
+
+// ================= MASCOTES (PETS) =================
+// ================= CONJUNTOS DE ARMADURA TEMÁTICOS =================
+// Conjunto do Caçador (Tier 1 - Agilidade / Sorte / Crítico)
+gear("elmo_cac1", { n: "Capuz do Caçador", s: "elmo", r: 1, b: { agi: 6, sor: 3 }, ps: { crit: 0.03 }, v: 40 });
+gear("peitoral_cac1", { n: "Gibão do Caçador", s: "peitoral", r: 1, b: { agi: 7, vit: 4 }, ps: { gd: 0.1 }, v: 50 });
+gear("calca_cac1", { n: "Calças do Caçador", s: "calca", r: 1, b: { agi: 6, vit: 3 }, ps: { crit: 0.03 }, v: 40 });
+gear("bota_cac1", { n: "Botas do Caçador", s: "bota", r: 1, b: { agi: 7, sor: 2 }, ps: { gd: 0.08 }, v: 40 });
+
+// Conjunto Arcano (Tier 2 - Inteligência / XP / Dano)
+gear("elmo_mag2", { n: "Capuz Arcano", s: "elmo", r: 2, b: { int: 14, sor: 4 }, ps: { xp: 0.12 }, v: 110 });
+gear("peitoral_mag2", { n: "Manto Arcano", s: "peitoral", r: 2, b: { int: 18, vit: 6 }, ps: { dmg: 0.14, xp: 0.1 }, v: 150 });
+gear("calca_mag2", { n: "Calças Arcanas", s: "calca", r: 2, b: { int: 13, agi: 5 }, ps: { xp: 0.1 }, v: 110 });
+gear("bota_mag2", { n: "Botas Arcanas", s: "bota", r: 2, b: { int: 12, agi: 6 }, ps: { dmg: 0.08 }, v: 110 });
+
+// Conjunto Sombrio (Tier 3 - Agilidade / Crítico / Execução)
+gear("elmo_drk3", { n: "Máscara Sombria", s: "elmo", r: 3, b: { agi: 24, sor: 10 }, ps: { crit: 0.08 }, v: 320 });
+gear("peitoral_drk3", { n: "Couraça Sombria", s: "peitoral", r: 3, b: { agi: 28, vit: 12 }, ps: { dmg: 0.18, ex: 0.02 }, v: 420 });
+gear("calca_drk3", { n: "Calças Sombrias", s: "calca", r: 3, b: { agi: 22, sor: 10 }, ps: { crit: 0.07 }, v: 320 });
+gear("bota_drk3", { n: "Botas Sombrias", s: "bota", r: 3, b: { agi: 24, sor: 8 }, ps: { ig: 0.1 }, v: 320 });
+
+// Conjunto do Shogun (Tier 4 - Força / Agilidade / Penetração)
+gear("elmo_sam4", { n: "Kabuto do Shogun", s: "elmo", r: 4, b: { for: 38, agi: 22 }, ps: { crit: 0.1 }, v: 850 });
+gear("peitoral_sam4", { n: "Armadura do Shogun", s: "peitoral", r: 4, b: { for: 48, vit: 28 }, ps: { dmg: 0.28, hp: 0.15 }, v: 1100 });
+gear("calca_sam4", { n: "Hakama de Guerra", s: "calca", r: 4, b: { for: 36, agi: 24 }, ps: { ig: 0.15 }, v: 850 });
+gear("bota_sam4", { n: "Grevas do Shogun", s: "bota", r: 4, b: { agi: 40, for: 20 }, ps: { crit: 0.09 }, v: 850 });
+
+ITEMS["pet_dragao"] = {
+  n: "Bebê Dragão",
+  s: "pet",
+  r: 4,
+  b: { for: 15, int: 15, sor: 10 },
+  ps: { dmg: 0.15, gd: 0.1, xp: 0.1 },
+  v: 2500,
+};
+
+gear("pet_adm", {
+  n: "Bebê Dragão do Administrador",
+  s: "pet",
+  r: 6,
+  b: { for: 90, agi: 90, int: 90, sor: 90, vit: 90 },
+  ps: { dmg: 0.5, xp: 0.5, gd: 0.5, crit: 0.15, ex: 0.05 },
+  v: 50000,
+});
 
 // ================= ARMAS DE MAGO (CAJADOS & CETROS) =================
 gear("cajado_fogo1", { n: "Cajado de Brasa", s: "arma", r: 1, cls: ["mago"], b: { int: 6 }, ps: { dmg: 0.12 }, v: 30 });
@@ -210,17 +265,33 @@ gear("colar_colosso", { n: "Coração de Pedra", s: "colar", r: 2, b: { vit: 16 
 gear("peitoral_guard", { n: "Couraça do Bastião", s: "peitoral", r: 2, b: { vit: 18, for: 6 }, ps: { hp: 0.25 }, v: 150 });
 gear("elmo_guard", { n: "Elmo do Baluarte", s: "elmo", r: 2, b: { vit: 14, for: 4 }, ps: { hp: 0.15 }, v: 110 });
 
+// ================= REINOS & ZONAS =================
+export const REALMS: { id: RealmId; n: string; sub: string; reqLv: number }[] = [
+  {
+    id: "valete",
+    n: "Reino Valete",
+    sub: "Terras iniciais onde novos aventureiros forjam suas primeiras builds.",
+    reqLv: 1,
+  },
+  {
+    id: "proximo",
+    n: "2º Reino (Em breve)",
+    sub: "Terras além do covil do dragão. Novas zonas e materiais em construção.",
+    reqLv: 25,
+  },
+];
+
 export const TRAINS: Zone[] = [
-  { id: "t1", n: "Boneco de palha", kind: "t", req: 1, xp: 1.2, d: "Golpes repetidos no pátio da vila." },
-  { id: "t2", n: "Arena dos veteranos", kind: "t", req: 5, xp: 3.5, d: "Duelos de treino contra mercenários." },
-  { id: "t3", n: "Torre do mestre", kind: "t", req: 10, xp: 9, d: "Disciplina dura sob o olhar do arquimestre." },
+  { id: "t1", realm: "valete", n: "Boneco de palha", kind: "t", req: 1, xp: 1.2, d: "Golpes repetidos no pátio da vila." },
+  { id: "t2", realm: "valete", n: "Arena dos veteranos", kind: "t", req: 5, xp: 3.5, d: "Duelos de treino contra mercenários." },
+  { id: "t3", realm: "valete", n: "Torre do mestre", kind: "t", req: 10, xp: 9, d: "Disciplina dura sob o olhar do arquimestre." },
 ];
 
 export const HUNTS: Zone[] = [
-  { id: "h1", n: "Floresta sussurrante", kind: "h", lv: 1, xp: 0.8, g: 0.6, dg: 0.5, l: [["pele", 0.02]], d: "Lobos e javalis rondam as clareiras.", pw: 150, dr: 0.02, lk: 0 },
-  { id: "h2", n: "Pântano maldito", kind: "h", lv: 5, xp: 2.4, g: 1.8, dg: 1.6, l: [["gosma", 0.02], ["pele", 0.02], ["ferro", 0.02]], d: "Criaturas viscosas escondem tesouros na lama.", pw: 450, dr: 0.025, lk: 0.3 },
-  { id: "h3", n: "Cavernas de cristal", kind: "h", lv: 10, xp: 6, g: 5, dg: 4, l: [["gema", 0.015], ["gosma", 0.02], ["ferro", 0.03]], d: "Golens de cristal guardam gemas brutas.", pw: 1200, dr: 0.03, lk: 0.8 },
-  { id: "h4", n: "Covil do dragão jovem", kind: "h", lv: 25, xp: 16, g: 12, dg: 7, l: [["gema", 0.03]], d: "Um dragão jovem guarda um tesouro colossal.", pw: 4200, dr: 0.035, lk: 1.5 },
+  { id: "h1", realm: "valete", n: "Floresta sussurrante", kind: "h", lv: 1, xp: 0.8, g: 0.6, dg: 0.5, l: [["pele", 0.02]], d: "Lobos e javalis rondam as clareiras.", pw: 150, dr: 0.02, lk: 0 },
+  { id: "h2", realm: "valete", n: "Pântano maldito", kind: "h", lv: 5, xp: 2.4, g: 1.8, dg: 1.6, l: [["gosma", 0.02], ["pele", 0.02], ["ferro", 0.02]], d: "Criaturas viscosas escondem tesouros na lama.", pw: 450, dr: 0.025, lk: 0.3 },
+  { id: "h3", realm: "valete", n: "Cavernas de cristal", kind: "h", lv: 10, xp: 6, g: 5, dg: 4, l: [["gema", 0.015], ["gosma", 0.02], ["ferro", 0.03]], d: "Golens de cristal guardam gemas brutas.", pw: 1200, dr: 0.03, lk: 0.8 },
+  { id: "h4", realm: "valete", n: "Covil do dragão jovem", kind: "h", lv: 25, xp: 16, g: 12, dg: 7, l: [["gema", 0.03], ["pet_dragao", 0.008], ["pet_adm", 0.0001]], d: "Um dragão jovem guarda um tesouro colossal.", pw: 4200, dr: 0.035, lk: 1.5 },
 ];
 
 export function findZone(act: Player["act"]): Zone | undefined {
@@ -308,6 +379,27 @@ export const RECIPES: { id: string; mats: Record<string, number>; gold: number }
   { id: "mart_gua2", mats: { ferro: 28, gosma: 16, gema: 2 }, gold: 1000 },
   { id: "mart_cru3", mats: { ferro: 62, pele: 34, gema: 7 }, gold: 3550 },
   { id: "mart_gua3", mats: { ferro: 62, gosma: 36, gema: 7 }, gold: 3550 },
+
+  // --- Conjuntos Temáticos ---
+  { id: "elmo_cac1", mats: { ferro: 8, pele: 8 }, gold: 260 },
+  { id: "peitoral_cac1", mats: { ferro: 10, pele: 12 }, gold: 340 },
+  { id: "calca_cac1", mats: { ferro: 8, pele: 10 }, gold: 280 },
+  { id: "bota_cac1", mats: { ferro: 8, pele: 9 }, gold: 260 },
+
+  { id: "elmo_mag2", mats: { ferro: 20, gosma: 14, gema: 2 }, gold: 950 },
+  { id: "peitoral_mag2", mats: { ferro: 26, gosma: 18, gema: 3 }, gold: 1250 },
+  { id: "calca_mag2", mats: { ferro: 22, gosma: 14, gema: 2 }, gold: 980 },
+  { id: "bota_mag2", mats: { ferro: 20, gosma: 12, gema: 2 }, gold: 920 },
+
+  { id: "elmo_drk3", mats: { ferro: 48, pele: 30, gosma: 20, gema: 6 }, gold: 2900 },
+  { id: "peitoral_drk3", mats: { ferro: 60, pele: 38, gosma: 25, gema: 8 }, gold: 3700 },
+  { id: "calca_drk3", mats: { ferro: 50, pele: 32, gosma: 20, gema: 6 }, gold: 3000 },
+  { id: "bota_drk3", mats: { ferro: 46, pele: 28, gosma: 18, gema: 6 }, gold: 2800 },
+
+  { id: "elmo_sam4", mats: { ferro: 95, pele: 60, gosma: 45, gema: 15 }, gold: 7500 },
+  { id: "peitoral_sam4", mats: { ferro: 120, pele: 75, gosma: 55, gema: 20 }, gold: 9800 },
+  { id: "calca_sam4", mats: { ferro: 100, pele: 65, gosma: 45, gema: 16 }, gold: 7800 },
+  { id: "bota_sam4", mats: { ferro: 90, pele: 55, gosma: 40, gema: 15 }, gold: 7200 },
 ];
 
 export const SKILLS: Record<ClassId, Skill[]> = {
@@ -344,11 +436,16 @@ export const SLOTS: { k: SlotKey; n: string; area: string }[] = [
   { k: "anel1", n: "Anel Esq.", area: "slot-ring1" },
   { k: "anel2", n: "Anel Dir.", area: "slot-ring2" },
   { k: "aura", n: "Aura", area: "slot-aura" },
+  { k: "pet", n: "Mascote", area: "slot-pet" },
 ];
 
 export const POWER = ["Nenhuma", "Faísca", "Incandescência", "Tempestade"];
 
 export const SKINS: Record<string, string> = {
+  peitoral_cac1: "Rastreador das Clareiras",
+  peitoral_mag2: "Arquimago Errante",
+  peitoral_drk3: "Lâmina Fantasma",
+  peitoral_sam4: "Shogun Carmesim",
   peitoral3: "Cavaleiro-dragão",
   peitoral4: "Senhor do Cataclismo",
   peitoral_guard: "Muralha Viva",
@@ -362,6 +459,7 @@ export const SKINS: Record<string, string> = {
   sec2: "Singularidade",
   adm0: "Desenvolvedor absoluto",
   adm1: "Divindade",
+  pet_adm: "Domador Supremo",
 };
 
 export const LEGENDS: { n: string; cls: ClassId; l: number; cp: number }[] = [
