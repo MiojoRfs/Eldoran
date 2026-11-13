@@ -286,17 +286,26 @@ export function normalize(raw: unknown): Player | null {
       if (typeof v === "number" && Number.isFinite(v)) at[k] = v;
     }
   }
-  const inv: Record<string, number> = {};
+  const migrateId = (id: string) =>
+    id
+      .replace(/^armadura(\d)$/, "peitoral$1")
+      .replace(/^acessorio(\d)$/, "colar$1");
+const inv: Record<string, number> = {};
   if (src.inv && typeof src.inv === "object") {
     for (const [k, v] of Object.entries(src.inv)) {
-      if (typeof v === "number" && Number.isFinite(v)) inv[k] = v;
+      if (typeof v === "number" && Number.isFinite(v)) {
+        const key = migrateId(k);
+        inv[key] = (inv[key] || 0) + v;
+      }
     }
   }
   let act: Player["act"] = null;
   if (src.act && (src.act.t === "h" || src.act.t === "t") && typeof src.act.id === "string") {
     act = { t: src.act.t, id: src.act.id };
   }
-  const p: Player = {
+  const rawPeitoral = eqIn.peitoral ?? eqIn.armadura ?? null;
+  const rawColar = eqIn.colar ?? eqIn.acessorio ?? null;
+    const p: Player = {
     name: typeof src.name === "string" && src.name.trim() ? src.name : "Herói",
     cls,
     level: Number(src.level) || 1,
@@ -305,16 +314,16 @@ export function normalize(raw: unknown): Player | null {
     pts: Number(src.pts) || 0,
     at,
     inv,
-eq: {
+    eq: {
       arma: eqIn.arma ?? null,
-      peitoral: eqIn.peitoral ?? eqIn.armadura ?? null,
+      peitoral: rawPeitoral ? migrateId(rawPeitoral) : null,
       elmo: eqIn.elmo ?? null,
       bota: eqIn.bota ?? null,
       calca: eqIn.calca ?? null,
       luva: eqIn.luva ?? null,
-      colar: eqIn.colar ?? eqIn.acessorio ?? null,
-      anel: null, // Deixa o fantasma sempre nulo
-      anel1: eqIn.anel1 ?? eqIn.anel ?? null, // Migra o anel antigo pra cá
+      colar: rawColar ? migrateId(rawColar) : null,
+      anel: null,
+      anel1: eqIn.anel1 ?? eqIn.anel ?? null,
       anel2: eqIn.anel2 ?? null,
       aura: eqIn.aura ?? null,
       pet: eqIn.pet ?? null,
